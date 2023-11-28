@@ -199,7 +199,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         </div>
         <div className={styles.attemptConteiner}>
           <div className={styles.attemptText}>Число попыток:</div>
-          <div className={styles.attempt}>3</div>
+          <div className={styles.attempt}>1</div>
         </div>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>
