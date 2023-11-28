@@ -3,7 +3,8 @@
   height: 48px;
 
   border-radius: 12px;
-  background: #7ac100;
+  background-color: #c10071;
+  box-shadow: 0 0 15px #c10071;
 
   color: #fff;
   text-align: center;
@@ -22,5 +23,7 @@
 }
 
 .button:hover {
-  background: #7ac100cc;
+  background: #790047;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 15px #790047;
 }

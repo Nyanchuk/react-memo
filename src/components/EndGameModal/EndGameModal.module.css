@@ -2,7 +2,7 @@
   width: 480px;
   height: 459px;
   border-radius: 12px;
-  background: #c2f5ff;
+  background: #fecefa;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,7 +16,7 @@
 }
 
 .title {
-  color: #004980;
+  color: #c10071;
   font-variant-numeric: lining-nums proportional-nums;
   font-family: StratosSkyeng;
   font-size: 40px;
