@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
+import React, { useState } from "react";
 
 export function SelectLevelPage() {
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
+  function handleCheckboxChange(e) {
+    setIsCheckboxChecked(e.target.checked);
+    console.log(`Чек-бокс ${e.target.checked ? "включен" : "выключен"}`);
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
@@ -23,6 +31,17 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
+        <div className={styles.customCheckboxContainer}>
+          <label className={styles.customCheckboxLabel}>
+            <input
+              type="checkbox"
+              checked={isCheckboxChecked}
+              onChange={handleCheckboxChange}
+              className={styles.customCheckbox}
+            />
+            Упрощенный режим
+          </label>
+        </div>
       </div>
     </div>
   );
