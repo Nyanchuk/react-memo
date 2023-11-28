@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
-import { Button } from "../../components/Button/Button";
+import { Button, ButtonExit } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { useNavigate } from "react-router-dom";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +42,7 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const navigate = useNavigate();
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -224,6 +226,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         </div>
       ) : null}
+      <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
     </div>
   );
 }

@@ -1,6 +1,12 @@
+.navigate {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .modal {
   width: 480px;
-  height: 459px;
+  height: 550px;
   border-radius: 12px;
   background: #fecefa;
   display: flex;
@@ -46,6 +52,5 @@
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
-
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }

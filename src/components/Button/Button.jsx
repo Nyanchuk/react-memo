@@ -7,3 +7,11 @@ export function Button({ children, onClick }) {
     </button>
   );
 }
+
+export function ButtonExit({ children, onClick }) {
+  return (
+    <button onClick={onClick} className={styles.buttonExit}>
+      {children}
+    </button>
+  );
+}
