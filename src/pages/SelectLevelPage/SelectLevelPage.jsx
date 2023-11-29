@@ -7,7 +7,6 @@ export function SelectLevelPage() {
 
   function handleCheckboxChange(e) {
     setIsCheckboxChecked(e.target.checked);
-    console.log(`Чек-бокс ${e.target.checked ? "включен" : "выключен"}`);
   }
 
   return (
@@ -31,7 +30,7 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
-        <div className={styles.customCheckboxContainer}>
+        <div className={`${styles.customCheckboxContainer} ${isCheckboxChecked ? styles.checked : ""}`}>
           <label className={styles.customCheckboxLabel}>
             <input
               type="checkbox"
@@ -40,6 +39,7 @@ export function SelectLevelPage() {
               className={styles.customCheckbox}
             />
             Упрощенный режим
+            {/* {isCheckboxChecked ? "Упрощенный режим включен" : "Упрощенный режим выключен"} */}
           </label>
         </div>
       </div>
