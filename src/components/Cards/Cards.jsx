@@ -6,6 +6,7 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button, ButtonExit } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -43,6 +44,8 @@ function getTimerValue(startDate, endDate) {
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const navigate = useNavigate();
+  const easyMode = useSelector(state => state.game.easyMode); // Получение значения из глобального состояния
+  const attempts = easyMode ? 3 : 1;
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -199,7 +202,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         </div>
         <div className={styles.attemptConteiner}>
           <div className={styles.attemptText}>Число попыток:</div>
-          <div className={styles.attempt}>1</div>
+          <div className={styles.attempt}>{attempts}</div>
         </div>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>

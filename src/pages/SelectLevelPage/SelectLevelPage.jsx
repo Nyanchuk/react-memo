@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { lightHard } from "../../store/actions & types/gameActions";
 
 export function SelectLevelPage() {
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const dispatch = useDispatch();
+  const isCheckboxChecked = useSelector(state => state.game.easyMode);
+  console.log("Состояние чекбокса:", isCheckboxChecked);
 
   function handleCheckboxChange(e) {
-    setIsCheckboxChecked(e.target.checked);
+    dispatch(lightHard(e.target.checked));
   }
 
   return (
