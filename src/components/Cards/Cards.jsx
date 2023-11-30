@@ -46,6 +46,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const navigate = useNavigate();
   const easyMode = useSelector(state => state.game.easyMode); // Получение значения из глобального состояния
   const attempts = easyMode ? 3 : 1;
+  const [mistakesCount, setMistakesCount] = useState(0);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -132,7 +133,34 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
-      finishGame(STATUS_LOST);
+      if (!easyMode) {
+        // В стандартном режиме завершаем игру после одной ошибки
+        finishGame(STATUS_LOST);
+      } else {
+        // В облегченном режиме увеличиваем счетчик ошибок
+        setMistakesCount(prevCount => prevCount + 1);
+        if (mistakesCount >= 2) {
+          // Завершаем игру после трех ошибок
+          finishGame(STATUS_LOST);
+        } else {
+          // Открываем и закрываем вторую карту после ошибки
+          const updatedCards = nextCards.map(card => {
+            if (openCardsWithoutPair.some(openCard => openCard.id === card.id)) {
+              // Временно открываем вторую карту
+              if (card.open) {
+                setTimeout(() => {
+                  setCards(prevCards => {
+                    const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
+                    return updated;
+                  });
+                }, 1000); // Задержка в миллисекундах (в данном случае 1 секунда)
+              }
+            }
+            return card;
+          });
+          setCards(updatedCards);
+        }
+      }
       return;
     }
 
