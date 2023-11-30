@@ -46,7 +46,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const navigate = useNavigate();
   const easyMode = useSelector(state => state.game.easyMode); // Получение значения из глобального состояния
   const attempts = easyMode ? 3 : 1;
-  const [mistakesCount, setMistakesCount] = useState(0);
+  const [remainingAttempts, setRemainingAttempts] = useState(attempts);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -137,10 +137,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         // В стандартном режиме завершаем игру после одной ошибки
         finishGame(STATUS_LOST);
       } else {
-        // В облегченном режиме увеличиваем счетчик ошибок
-        setMistakesCount(prevCount => prevCount + 1);
-        if (mistakesCount >= 2) {
-          // Завершаем игру после трех ошибок
+        // В облегченном режиме уменьшаем счетчик ошибок
+        setRemainingAttempts(prevAttempts => prevAttempts - 1);
+
+        if (remainingAttempts <= 1) {
+          // Завершаем игру после использования всех попыток
           finishGame(STATUS_LOST);
         } else {
           // Открываем и закрываем вторую карту после ошибки
@@ -230,7 +231,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         </div>
         <div className={styles.attemptConteiner}>
           <div className={styles.attemptText}>Число попыток:</div>
-          <div className={styles.attempt}>{attempts}</div>
+          <div className={styles.attempt}>{remainingAttempts}</div>
         </div>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>
