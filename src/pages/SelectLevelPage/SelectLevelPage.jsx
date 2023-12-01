@@ -57,6 +57,11 @@ export function SelectLevelPage() {
             {/* {isCheckboxChecked ? "Упрощенный режим включен" : "Упрощенный режим выключен"} */}
           </label>
         </div>
+        <div className={styles.buttomliderboard}>
+          <Link className={styles.liderboard} to="/leaderboard">
+            Наши победители
+          </Link>
+        </div>
       </div>
       <div>
         <div className={`${styles.descriptionContainer} ${showDescription ? styles.descriptionSlideIn : ""}`}>

@@ -1,0 +1,34 @@
+.conteiner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  text-decoration: none;
+  font-family: StratosSkyeng;
+  color: #fecefa;
+  font-size: 18px;
+}
+
+/* Анимация картинки */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.conteiner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingImage {
+  width: 100px;
+  height: 100px;
+  animation: spin 3s linear infinite;
+}

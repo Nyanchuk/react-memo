@@ -147,3 +147,28 @@
   animation: slideIn 0.5s forwards;
 }
 
+/* ССЫЛКА НА ЛИДЕРБОРД */
+
+.liderboard {
+  color: #fbe3f5;
+  text-align: center;
+  font-family: StratosSkyeng;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 72px;
+  text-decoration: none;
+}
+
+.buttomliderboard {
+  width: 360px;
+  border-radius: 12px;
+  margin-top: 25px;
+  background: #800069;
+  text-align: center;
+}
+
+.buttomliderboard:hover {
+  transition: all .3s;
+  background: #590049;
+}
