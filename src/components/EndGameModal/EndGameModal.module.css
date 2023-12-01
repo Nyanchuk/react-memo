@@ -1,8 +1,14 @@
+.navigate {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .modal {
   width: 480px;
-  height: 459px;
+  height: 550px;
   border-radius: 12px;
-  background: #c2f5ff;
+  background: #fecefa;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,7 +22,7 @@
 }
 
 .title {
-  color: #004980;
+  color: #c10071;
   font-variant-numeric: lining-nums proportional-nums;
   font-family: StratosSkyeng;
   font-size: 40px;
@@ -46,6 +52,5 @@
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
-
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }

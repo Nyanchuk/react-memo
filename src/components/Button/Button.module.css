@@ -1,26 +1,48 @@
 .button {
   width: 246px;
   height: 48px;
-
   border-radius: 12px;
-  background: #7ac100;
-
+  background-color: #c10071;
+  box-shadow: 0 0 15px #c10071;
   color: #fff;
   text-align: center;
   font-variant-numeric: lining-nums proportional-nums;
+  font-family: StratosSkyeng;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px;
+  border: none;
+  cursor: pointer;
+}
 
-  /* Pres → Caption S */
+.button:hover {
+  background: #790047;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 15px #790047;
+}
+
+.buttonExit {
+  margin-top: 50px;
+  width: 300px;
+  height: 68px;
+  border-radius: 12px;
+  background-color: #c10071;
+  box-shadow: 0 0 15px #c10071;
+  color: #fff;
+  text-align: center;
+  font-variant-numeric: lining-nums proportional-nums;
   font-family: StratosSkyeng;
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: 32px; /* 133.333% */
-
   border: none;
-
   cursor: pointer;
 }
 
-.button:hover {
-  background: #7ac100cc;
+.buttonExit:hover {
+  background: #790047;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 15px #790047;
 }

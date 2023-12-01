@@ -2,6 +2,7 @@
   width: 100%;
   min-height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -10,7 +11,7 @@
   width: 480px;
   height: 459px;
   border-radius: 12px;
-  background: #c2f5ff;
+  background: #fecefa;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -18,7 +19,7 @@
 }
 
 .title {
-  color: #004980;
+  color: #800069;
   text-align: center;
   font-variant-numeric: lining-nums proportional-nums;
   font-family: StratosSkyeng;
@@ -43,13 +44,18 @@
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
+  border-radius: 50px;
+  border: 1px solid #800069;
+  background: #f2b3e6;
+}
 
-  border-radius: 12px;
-  background: #fff;
+.level:hover {
+  box-shadow: 0 0 5px #800069;
+  transition: all .2s;
 }
 
 .levelLink {
-  color: #0080c1;
+  color: #800069;
   text-align: center;
   font-family: StratosSkyeng;
   font-size: 64px;
@@ -60,5 +66,84 @@
 }
 
 .levelLink:visited {
-  color: #0080c1;
+  color: #800069;
 }
+
+.customCheckboxContainer {
+  display: flex;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.customCheckboxLabel {
+  font-family: StratosSkyeng;
+  margin-left: 5px;
+  color: #800069;
+}
+
+.customCheckbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.customCheckboxLabel::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: -4px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #800069;
+  border-radius: 8px;
+}
+
+.checked .customCheckboxLabel::before {
+  color: #800069;
+  content: "✔";
+  text-align: center;
+  font-size: 24px; 
+}
+
+.description {
+  transition: all 0.5s ease-in-out;
+  width: 480px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  font-family: StratosSkyeng;
+  background: #fecefa;
+  color: #800069;
+  border-radius: 12px;
+}
+
+/* Добавляем стили для контейнера с описанием */
+.descriptionContainer {
+  margin-top: 25px;
+  position: relative;
+  overflow: hidden;
+  height: 80px;
+  transition: height 0.5s ease-in-out;
+}
+
+/* Анимация для выдвижения таблички с описанием */
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Классы для управления анимацией */
+.descriptionSlideIn {
+  height: auto;
+  animation: slideIn 0.5s forwards;
+}
+

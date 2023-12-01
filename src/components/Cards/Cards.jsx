@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
-import { Button } from "../../components/Button/Button";
+import { Button, ButtonExit } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +43,10 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const navigate = useNavigate();
+  const easyMode = useSelector(state => state.game.easyMode); // Получение значения из глобального состояния
+  const attempts = easyMode ? 3 : 1;
+  const [remainingAttempts, setRemainingAttempts] = useState(attempts);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -73,6 +79,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    setRemainingAttempts(easyMode ? 3 : 1);
   }
 
   /**
@@ -127,7 +134,35 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
-      finishGame(STATUS_LOST);
+      if (!easyMode) {
+        // В стандартном режиме завершаем игру после одной ошибки
+        finishGame(STATUS_LOST);
+      } else {
+        // В облегченном режиме уменьшаем счетчик ошибок
+        setRemainingAttempts(prevAttempts => prevAttempts - 1);
+
+        if (remainingAttempts <= 1) {
+          // Завершаем игру после использования всех попыток
+          finishGame(STATUS_LOST);
+        } else {
+          // Открываем и закрываем вторую карту после ошибки
+          const updatedCards = nextCards.map(card => {
+            if (openCardsWithoutPair.some(openCard => openCard.id === card.id)) {
+              // Временно открываем вторую карту
+              if (card.open) {
+                setTimeout(() => {
+                  setCards(prevCards => {
+                    const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
+                    return updated;
+                  });
+                }, 1000); // Задержка в миллисекундах (в данном случае 1 секунда)
+              }
+            }
+            return card;
+          });
+          setCards(updatedCards);
+        }
+      }
       return;
     }
 
@@ -195,6 +230,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
+        <div className={styles.attemptConteiner}>
+          <div className={styles.attemptText}>Число попыток:</div>
+          <div className={styles.attempt}>{remainingAttempts}</div>
+        </div>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>
 
@@ -220,6 +259,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         </div>
       ) : null}
+      <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
     </div>
   );
 }

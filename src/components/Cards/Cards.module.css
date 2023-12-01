@@ -1,12 +1,37 @@
+.attemptConteiner {
+  background-color: #c10071;
+  box-shadow: 0 0 15px #c10071;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 200px;
+  width: 100px;
+  height: 100px;
+  font-family: StratosSkyeng;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
+}
+
+.attemptText {
+  font-size: 15px;
+}
+
+.attempt {
+  font-size: 32px;
+}
+
 .container {
   width: 672px;
-  margin: 0 auto;
+  margin: 100px auto;
   padding: 26px;
   padding-top: 22px;
   box-sizing: border-box;
 }
 
 .cards {
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -22,21 +47,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #004980c0;
+  background: #44003997;
+  backdrop-filter: blur(4px);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end; 
   margin-bottom: 35px;
 }
 
 .timer {
   display: flex;
-  align-items: end;
-
+  align-items: flex-end;
   color: #fff;
+  text-shadow: 0 0 10px #c10071;
   font-family: StratosSkyeng;
   font-size: 64px;
   font-style: normal;
@@ -67,6 +93,5 @@
   font-style: normal;
   font-weight: 400;
   line-height: 32px;
-
   margin-bottom: -12px;
 }

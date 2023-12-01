@@ -1,0 +1,1 @@
+export const SET_LEVEL_LIGHT = "SET_LEVEL_LIGHT";
