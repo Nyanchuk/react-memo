@@ -17,6 +17,17 @@ export function LeaderboardPage() {
         const data = await getFetchWinners(); // Вызов API-запроса для получения данных
         setLeaderboardData(data.leaders); // Обновление состояния с данными из API
         setShowLoading(false); // Установка состояния загрузки в false
+        const maxLeaders = 10; // Максимальное количество лидеров
+        const updatedLeaders = [...data.leaders];
+        while (updatedLeaders.length < maxLeaders) {
+          updatedLeaders.push({ id: null, name: "", time: null }); // Заполнение пустыми значениями, если массив не содержит 10 элементов
+        }
+        // Помещаем пустые элементы в конец массива, сортируем непустые элементы
+        const nonEmptyLeaders = updatedLeaders.filter(entry => entry.id !== null);
+        const emptyLeaders = updatedLeaders.filter(entry => entry.id === null);
+        const sortedNonEmptyLeaders = nonEmptyLeaders.sort((a, b) => a.time - b.time);
+        const finalLeaders = [...sortedNonEmptyLeaders, ...emptyLeaders];
+        setLeaderboardData(finalLeaders);
         console.log(data);
       } catch (error) {
         console.error("Ошибка получения данных:", error);
@@ -47,9 +58,9 @@ export function LeaderboardPage() {
             <tbody>
               {leaderboardData.slice(0, 10).map((entry, index) => (
                 <tr key={index}>
-                  <td className={styles.users}>{entry.id}</td>
-                  <td className={styles.users}>{entry.name}</td>
-                  <td className={styles.users}>{entry.time}</td>
+                  <td className={styles.users}>{index + 1}</td>
+                  <td className={styles.users}>{entry.name ? entry.name : "-"}</td>
+                  <td className={styles.users}>{entry.time ? entry.time : "-"}</td>
                 </tr>
               ))}
             </tbody>

@@ -8,7 +8,8 @@ import { addNewLeader } from "../../api";
 
 export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, showLeaderboardPrompt }) {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState(""); // Состояние для имени пользователя
+  const [userName, setUserName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const title = isWon ? (showLeaderboardPrompt ? "Вы попали на Лидерборд!" : "Вы победили!") : "Вы проиграли!";
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
   const imgAlt = isWon ? "celebration emodji" : "dead emodji";
@@ -17,21 +18,25 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const seconds = padWithZero(gameDurationSeconds);
 
   const handleInputChange = event => {
-    setUserName(event.target.value); // Обновляем состояние userName при изменении значения поля ввода
+    setUserName(event.target.value);
   };
 
   const handleLeaderboardClick = async () => {
-    if (showLeaderboardPrompt) {
+    if (showLeaderboardPrompt && !isLoading) {
+      setIsLoading(true);
       const time = parseInt(gameDurationMinutes, 10) * 60 + parseInt(gameDurationSeconds, 10);
+      const finalUserName = userName || "Пользователь";
       console.log("Отправляемые данные:", userName, time); // Вывод данных перед отправкой
 
       try {
-        await addNewLeader(userName, time); // Отправка API-запроса на добавление нового лидера
+        await addNewLeader({ name: finalUserName, time: time }); // Отправка API-запроса на добавление нового лидера
         // Переход на страницу лидерборда
         navigate("/leaderboard");
       } catch (error) {
         console.error("Ошибка при добавлении нового лидера:", error);
-        // Обработка ошибки, например, отображение сообщения об ошибке
+        // Обработка ошибки
+      } finally {
+        setIsLoading(false); // Устанавливаем isLoading в false после завершения запроса
       }
     } else {
       navigate("/leaderboard");
@@ -54,7 +59,9 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
               value={userName}
               onChange={handleInputChange}
             />
-            <ButtonExit onClick={handleLeaderboardClick}>Посмотреть Лидерборд</ButtonExit>
+            <ButtonExit onClick={handleLeaderboardClick} disabled={isLoading}>
+              {isLoading ? "Добавляем вас в список..." : "Посмотреть Лидерборд"}
+            </ButtonExit>
           </div>
         ) : (
           <Button onClick={onClick}>Начать сначала</Button>
