@@ -54,7 +54,7 @@ export function LeaderboardPage() {
               ))}
             </tbody>
           </table>
-          <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+          <ButtonExit onClick={() => navigate("/")}>Начать игру</ButtonExit>
         </>
       )}
     </div>
