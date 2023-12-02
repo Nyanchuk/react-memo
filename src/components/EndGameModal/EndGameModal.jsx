@@ -6,9 +6,9 @@ import { Button, ButtonExit } from "../Button/Button";
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, showLeaderboardPrompt }) {
   const navigate = useNavigate();
-  const title = isWon ? "Вы победили!" : "Вы проиграли!";
+  const title = isWon ? (showLeaderboardPrompt ? "Вы попали на Лидерборд!" : "Вы победили!") : "Вы проиграли!";
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
   const imgAlt = isWon ? "celebration emodji" : "dead emodji";
 
@@ -21,7 +21,14 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
         {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
       </div>
       <div className={styles.navigate}>
-        <Button onClick={onClick}>Начать сначала</Button>
+        {isWon && showLeaderboardPrompt ? (
+          <div className={styles.userBlock}>
+            <input className={styles.userName} type="text" placeholder="Введите ваше имя" />
+            <ButtonExit onClick={() => navigate("/leaderboard")}>Посмотреть Лидерборд</ButtonExit>
+          </div>
+        ) : (
+          <Button onClick={onClick}>Начать сначала</Button>
+        )}
         <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
       </div>
     </div>

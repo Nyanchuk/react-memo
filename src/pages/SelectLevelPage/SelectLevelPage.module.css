@@ -164,11 +164,13 @@
   width: 360px;
   border-radius: 12px;
   margin-top: 25px;
-  background: #800069;
+  background: #c10071;
+  box-shadow: 0 0 15px #c10071;
   text-align: center;
 }
 
 .buttomliderboard:hover {
   transition: all .3s;
-  background: #590049;
+  background: #790047;
+  box-shadow: 0 0 15px #790047;
 }

@@ -1,12 +1,14 @@
 .navigate {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap:wrap;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal {
-  width: 480px;
-  height: 550px;
+  width: 550px;
+  height: 670px;
   border-radius: 12px;
   background: #fecefa;
   display: flex;
@@ -22,6 +24,7 @@
 }
 
 .title {
+  text-align: center;
   color: #c10071;
   font-variant-numeric: lining-nums proportional-nums;
   font-family: StratosSkyeng;
@@ -29,7 +32,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: 48px;
-
   margin-bottom: 28px;
 }
 
@@ -41,7 +43,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: 32px;
-
   margin-bottom: 10px;
 }
 
@@ -52,5 +53,34 @@
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
-  margin-bottom: 50px;
+  margin-bottom: 18px;
+}
+
+.userName {
+  padding: 32px;
+  font-family: StratosSkyeng;
+  font-size: 22px;
+  font-style: normal;
+  width: 300px;
+  height: 68px;
+  box-sizing: border-box;
+  border: 3px solid #c10071;
+  color: #c10071;
+  border-radius: 12px;
+  background-color: transparent;
+}
+
+.userBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.userName::placeholder {
+  text-align: center;
+  font-family: StratosSkyeng;
+  font-size: 22px;
+  font-style: normal;
+  color: #c10071;
 }
