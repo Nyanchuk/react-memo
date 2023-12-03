@@ -95,3 +95,60 @@
   line-height: 32px;
   margin-bottom: -12px;
 }
+
+.footer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.footerConteiner {
+  margin-top: 40px;
+  background-color: rgb(253, 191, 227);
+  box-shadow: 0 0 20px rgb(253, 191, 227);
+  border: 3px solid #000000;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 200px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footerConteiner:active {
+  background-color: rgb(246, 90, 171);
+  box-shadow: 0 0 20px rgb(246, 90, 181);
+  border: 3px solid #000000;
+}
+
+.footerImg{
+  padding-bottom: 4px;
+  max-width: 65%;
+  height: auto;
+}
+
+.bottomInfo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.superPowerDescription {
+  text-align: center;
+  width: auto;
+  height: auto;
+  padding: 15px;
+  margin: 25px;
+  background: rgb(253, 191, 227);
+  box-shadow: 0 0 20px rgb(253, 191, 227);
+  border-radius: 20px;
+  opacity: 0.7;
+  font-family: StratosSkyeng;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+}
