@@ -205,99 +205,116 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.timer}>
-          {status === STATUS_PREVIEW ? (
-            <div>
-              <p className={styles.previewText}>Запоминайте пары!</p>
-              <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
-            </div>
-          ) : (
-            <>
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>min</div>
-                <div>{timer.minutes.toString().padStart("2", "0")}</div>
+    <div className={styles.max}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.timer}>
+            {status === STATUS_PREVIEW ? (
+              <div>
+                <p className={styles.previewText}>Запоминайте пары!</p>
+                <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
               </div>
-              .
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>sec</div>
-                <div>{timer.seconds.toString().padStart("2", "0")}</div>
+            ) : (
+              <>
+                <div className={styles.timerValue}>
+                  <div className={styles.timerDescription}>min</div>
+                  <div>{timer.minutes.toString().padStart("2", "0")}</div>
+                </div>
+                .
+                <div className={styles.timerValue}>
+                  <div className={styles.timerDescription}>sec</div>
+                  <div>{timer.seconds.toString().padStart("2", "0")}</div>
+                </div>
+              </>
+            )}
+          </div>
+          <div className={styles.attemptConteiner}>
+            <div className={styles.attemptText}>Число попыток:</div>
+            <div className={styles.attempt}>{remainingAttempts}</div>
+          </div>
+          {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        </div>
+
+        <div className={styles.cards}>
+          {cards.map(card => (
+            <Card
+              key={card.id}
+              onClick={() => openCard(card)}
+              open={status !== STATUS_IN_PROGRESS ? true : card.open}
+              suit={card.suit}
+              rank={card.rank}
+            />
+          ))}
+          {pairsCount === 3 && (
+            <>
+              <div className={styles.topInfo}>
+                <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+              </div>
+            </>
+          )}
+          {pairsCount === 6 && (
+            <>
+              <div className={styles.topInfo}>
+                <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
               </div>
             </>
           )}
         </div>
-        <div className={styles.attemptConteiner}>
-          <div className={styles.attemptText}>Число попыток:</div>
-          <div className={styles.attempt}>{remainingAttempts}</div>
-        </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
-      </div>
 
-      <div className={styles.cards}>
-        {cards.map(card => (
-          <Card
-            key={card.id}
-            onClick={() => openCard(card)}
-            open={status !== STATUS_IN_PROGRESS ? true : card.open}
-            suit={card.suit}
-            rank={card.rank}
-          />
-        ))}
+        {isGameEnded ? (
+          <div className={styles.modalContainer}>
+            <EndGameModal
+              isWon={status === STATUS_WON}
+              gameDurationSeconds={timer.seconds}
+              gameDurationMinutes={timer.minutes}
+              onClick={resetGame}
+              showLeaderboardPrompt={showLeaderboardPrompt}
+            />
+          </div>
+        ) : null}
       </div>
-
-      {isGameEnded ? (
-        <div className={styles.modalContainer}>
-          <EndGameModal
-            isWon={status === STATUS_WON}
-            gameDurationSeconds={timer.seconds}
-            gameDurationMinutes={timer.minutes}
-            onClick={resetGame}
-            showLeaderboardPrompt={showLeaderboardPrompt}
-          />
-        </div>
-      ) : null}
-      <div className={styles.footer}>
-        <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
-        {/* Суперсилы помощи: */}
-        {pairsCount === 9 && (
-          <>
-            <div
-              className={styles.footerConteiner}
-              onMouseEnter={() =>
-                handleSuperPowerMouseEnter(
-                  "ГЛАЗ БОГА <br><br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
-                )
-              }
-              onMouseLeave={() => handleSuperPowerMouseLeave()}
-            >
-              <img src={eyeOfGod} alt="Eye of God" className={styles.footerImg} />
+      {pairsCount === 9 && (
+        <>
+          <div className={styles.topInfo}>
+            <div className={styles.footer}>
+              <div
+                className={styles.footerConteiner}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "ГЛАЗ БОГА <br><br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={eyeOfGod} alt="Eye of God" className={styles.footerImg} />
+              </div>
+              <div
+                className={styles.footerConteiner}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "ВТОРАЯ ПОЛОВИНКА <br><br> Находит пару карт или вторую карту, если игрок уже успел выбрать первую карту",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={pairOfCards} alt="Pair of Cards" className={styles.footerImg} />
+              </div>
+              <div
+                className={styles.footerConteiner}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "УДАЧНЫЙ ХОД <br><br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={goodMove} alt="Good Move" className={styles.footerImg} />
+              </div>
             </div>
-            <div
-              className={styles.footerConteiner}
-              onMouseEnter={() =>
-                handleSuperPowerMouseEnter(
-                  "ВТОРАЯ ПОЛОВИНКА <br><br> Находит пару карт или вторую карту, если игрок уже успел выбрать первую карту",
-                )
-              }
-              onMouseLeave={() => handleSuperPowerMouseLeave()}
-            >
-              <img src={pairOfCards} alt="Pair of Cards" className={styles.footerImg} />
-            </div>
-            <div
-              className={styles.footerConteiner}
-              onMouseEnter={() =>
-                handleSuperPowerMouseEnter(
-                  "УДАЧНЫЙ ХОД <br><br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
-                )
-              }
-              onMouseLeave={() => handleSuperPowerMouseLeave()}
-            >
-              <img src={goodMove} alt="Good Move" className={styles.footerImg} />
-            </div>
-          </>
-        )}
-      </div>
+            <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+          </div>
+        </>
+      )}
       <div className={styles.bottomInfo}>
         {superPowerDescription && (
           <div
