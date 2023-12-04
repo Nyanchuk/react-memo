@@ -1,4 +1,4 @@
-import LoadingPage from "./logo192.png";
+import LoadingPage from "../../img/logo192.png";
 import styles from "./Loading.module.css";
 
 const Loading = () => {

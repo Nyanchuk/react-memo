@@ -1,7 +1,7 @@
 import Loading from "../../components/Loading/Loading";
 import React, { useState, useEffect } from "react";
 import styles from "./LeaderboardPage.module.css";
-import LoadingPage from "../../components/Loading/logo192.png";
+import LoadingPage from "../../img/logo192.png";
 import { ButtonExit } from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { getFetchWinners } from "../../api";
