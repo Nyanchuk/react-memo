@@ -1,8 +1,8 @@
-const allWinners = "https://wedev-api.sky.pro/api/leaderboard";
+const allWinnersNew = "https://wedev-api.sky.pro/api/v2/leaderboard";
 
 export async function getFetchWinners() {
   try {
-    const response = await fetch(allWinners);
+    const response = await fetch(allWinnersNew);
     if (!response.ok) {
       throw new Error("Ошибка получения данных");
     }

@@ -1,8 +1,10 @@
 .max {
+  height: 100%;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .attemptConteiner {
@@ -112,7 +114,7 @@
 }
 
 .footerConteiner {
-  margin-bottom: 250px;
+  margin-bottom: 265px;
   margin-top: 25px;
   background-color: rgb(253, 191, 227);
   box-shadow: 0 0 20px rgb(253, 191, 227);
@@ -127,6 +129,11 @@
   flex-direction: column;
 }
 
+.footerConteiner:hover {
+  transition: all .5s;
+  box-shadow: 0 0 30px rgb(253, 191, 227);
+}
+
 .footerConteiner:active {
   background-color: rgb(246, 90, 171);
   box-shadow: 0 0 20px rgb(246, 90, 181);
@@ -139,24 +146,24 @@
 }
 
 .bottomInfo{
-  width: 100px;
+  width: 0;
   display: flex;
   flex-direction: column;
 }
 
 .superPowerDescription {
   position: relative;
-  bottom: -250px;
+  bottom: -70px;
   right: 300px;
   text-align: center;
-  width: 270px;
-  height: auto;
-  padding: 15px;
+  width: 280px;
+  height: 190px;
+  padding: 10px;
   background: rgb(253, 191, 227);
-  box-shadow: 0 0 20px rgb(253, 191, 227);
-  border-radius: 20px;
+  box-shadow: 0 0 15px rgb(253, 191, 227);
+  border-radius: 30px;
   font-family: StratosSkyeng;
-  font-size: 18px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
 }
@@ -164,4 +171,21 @@
 .topInfo {
   display: flex;
   flex-direction: column;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Классы для управления анимацией */
+.descriptionSlideIn {
+  height: 190px;
+  animation: slideIn 0.8s forwards;
 }

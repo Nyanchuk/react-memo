@@ -281,7 +281,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 className={styles.footerConteiner}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ГЛАЗ БОГА <br><br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
+                    "ГЛАЗ БОГА <br>----------------<br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -292,7 +292,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 className={styles.footerConteiner}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ВТОРАЯ ПОЛОВИНКА <br><br> Находит пару карт или вторую карту, если игрок уже успел выбрать первую карту",
+                    "ВТОРАЯ ПОЛОВИНКА <br>----------------<br> -Подсвечивает парные карты на игровом поле, если игрок не выбрал первую карту<br>- Подсвечивает вторую парную карту на игровом поле, если игрок выбрал первую карту",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -303,7 +303,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 className={styles.footerConteiner}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "УДАЧНЫЙ ХОД <br><br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
+                    "УДАЧНЫЙ ХОД <br>----------------<br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -315,7 +315,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           </div>
         </>
       )}
-      <div className={styles.bottomInfo}>
+      <div className={`${styles.bottomInfo} ${superPowerDescription ? styles.descriptionSlideIn : ""}`}>
         {superPowerDescription && (
           <div
             className={styles.superPowerDescription}
