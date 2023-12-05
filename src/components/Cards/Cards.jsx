@@ -48,6 +48,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [gameEndDate, setGameEndDate] = useState(null);
   const [showLeaderboardPrompt, setShowLeaderboardPrompt] = useState(false);
   const [superPowerDescription, setSuperPowerDescription] = useState(null);
+  const [superPowerActiveEyeOfGod, setSuperPowerActiveEyeOfGod] = useState(false); // Состояние для отслеживания клика по "ГЛАЗ БОГА"
+  const [superPowerUsed, setSuperPowerUsed] = useState(false); // Состояние для отслеживания числа кликов
 
   const [timer, setTimer] = useState({
     seconds: 0,
@@ -75,6 +77,26 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(STATUS_PREVIEW);
     setRemainingAttempts(easyMode ? 3 : 1);
   }
+
+  const activateSuperPowerEyeOfGod = () => {
+    if (gameStartDate && !superPowerUsed) {
+      setSuperPowerUsed(true);
+      setSuperPowerActiveEyeOfGod(true);
+      const pauseTime = new Date(); // Сохраняем время паузы
+      setGameEndDate(pauseTime);
+      setTimeout(() => {
+        setGameStartDate(prevStartDate => {
+          const timePaused = new Date().getTime() - pauseTime.getTime(); // Вычисляем время, на которое таймер был приостановлен
+          const newStartDate = new Date(prevStartDate.getTime() + timePaused); // Устанавливаем новое начальное время, учитывая время паузы
+          setGameEndDate(null); // Сбрасываем приостановленную конечную дату
+          return newStartDate; // Возобновляем таймер
+        });
+      }, 5000); // Возобновляем таймер через 5 секунд
+      setTimeout(() => setSuperPowerActiveEyeOfGod(false), 5000); // Деактивируем суперсилу через 5 секунд
+    } else {
+      // Суперсила уже использована, ничего не делаем
+    }
+  };
 
   const openCard = clickedCard => {
     // Если карта уже открыта, то ничего не делаем
@@ -240,7 +262,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             <Card
               key={card.id}
               onClick={() => openCard(card)}
-              open={status !== STATUS_IN_PROGRESS ? true : card.open}
+              open={superPowerActiveEyeOfGod || status !== STATUS_IN_PROGRESS ? true : card.open}
               suit={card.suit}
               rank={card.rank}
             />
@@ -278,7 +300,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           <div className={styles.topInfo}>
             <div className={styles.footer}>
               <div
-                className={styles.footerConteiner}
+                className={superPowerUsed ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerEyeOfGod}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
                     "ГЛАЗ БОГА <br>----------------<br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",

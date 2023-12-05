@@ -129,6 +129,22 @@
   flex-direction: column;
 }
 
+.footerConteinerOff {
+  margin-bottom: 265px;
+  margin-top: 25px;
+  background-color: rgb(129, 63, 101);
+  box-shadow: 0 0 20px rgb(129, 63, 101);
+  text-align: center;
+  color: #ffffff;
+  border-radius: 200px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 .footerConteiner:hover {
   transition: all .5s;
   box-shadow: 0 0 30px rgb(253, 191, 227);
