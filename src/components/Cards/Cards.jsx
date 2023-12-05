@@ -59,8 +59,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
+    setSuperPowerActiveEyeOfGod(false);
+    setSuperPowerUsed(false);
     if (status === STATUS_WON && pairsCount === 9) {
       setShowLeaderboardPrompt(true);
+      setSuperPowerActiveEyeOfGod(false);
     }
   }
   function startGame() {
@@ -71,6 +74,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(STATUS_IN_PROGRESS);
   }
   function resetGame() {
+    setSuperPowerUsed(false);
+    setSuperPowerActiveEyeOfGod(false);
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
