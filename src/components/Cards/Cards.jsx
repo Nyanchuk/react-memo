@@ -48,8 +48,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [gameEndDate, setGameEndDate] = useState(null);
   const [showLeaderboardPrompt, setShowLeaderboardPrompt] = useState(false);
   const [superPowerDescription, setSuperPowerDescription] = useState(null);
-  const [superPowerActiveEyeOfGod, setSuperPowerActiveEyeOfGod] = useState(false); // Состояние для отслеживания клика по "ГЛАЗ БОГА"
   const [superPowerUsed, setSuperPowerUsed] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerUsed1, setSuperPowerUsed1] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerUsed2, setSuperPowerUsed2] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerActiveEyeOfGod, setSuperPowerActiveEyeOfGod] = useState(false); // Состояние для отслеживания клика по "ГЛАЗ БОГА"
 
   const [timer, setTimer] = useState({
     seconds: 0,
@@ -98,6 +100,26 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         });
       }, 5000); // Возобновляем таймер через 5 секунд
       setTimeout(() => setSuperPowerActiveEyeOfGod(false), 5000); // Деактивируем суперсилу через 5 секунд
+    } else {
+      // Суперсила уже использована, ничего не делаем
+    }
+  };
+
+  // ВТОРАЯ ПОЛОВИНКА
+
+  const activateSuperPowerPairOfCards = () => {
+    if (gameStartDate && !superPowerUsed1) {
+      setSuperPowerUsed1(true);
+    } else {
+      // Суперсила уже использована, ничего не делаем
+    }
+  };
+
+  // УДАЧНЫЙ ХОД
+
+  const activateSuperPowerGoodMove = () => {
+    if (gameStartDate && !superPowerUsed2) {
+      setSuperPowerUsed2(true);
     } else {
       // Суперсила уже использована, ничего не делаем
     }
@@ -309,7 +331,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 onClick={activateSuperPowerEyeOfGod}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ГЛАЗ БОГА <br>----------------<br> На 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
+                    "ГЛАЗ БОГА <br>----------------<br> При активации на 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -317,10 +339,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <img src={eyeOfGod} alt="Eye of God" className={styles.footerImg} />
               </div>
               <div
-                className={styles.footerConteiner}
+                className={superPowerUsed1 ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerPairOfCards}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ВТОРАЯ ПОЛОВИНКА <br>----------------<br> -Подсвечивает парные карты на игровом поле, если игрок не выбрал первую карту<br>- Подсвечивает вторую парную карту на игровом поле, если игрок выбрал первую карту",
+                    "ВТОРАЯ ПОЛОВИНКА <br>----------------<br> При активации показывает игроку пару карт или вторую карту, если игрок успел выбрать первую карту",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -328,7 +351,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <img src={pairOfCards} alt="Pair of Cards" className={styles.footerImg} />
               </div>
               <div
-                className={styles.footerConteiner}
+                className={superPowerUsed2 ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerGoodMove}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
                     "УДАЧНЫЙ ХОД <br>----------------<br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
