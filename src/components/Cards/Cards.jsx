@@ -63,6 +63,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(status);
     setSuperPowerActiveEyeOfGod(false);
     setSuperPowerUsed(false);
+    setSuperPowerUsed1(false);
+    setSuperPowerUsed2(false);
     if (status === STATUS_WON && pairsCount === 9) {
       setShowLeaderboardPrompt(true);
       setSuperPowerActiveEyeOfGod(false);
@@ -77,6 +79,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
   function resetGame() {
     setSuperPowerUsed(false);
+    setSuperPowerUsed1(false);
+    setSuperPowerUsed2(false);
     setSuperPowerActiveEyeOfGod(false);
     setGameStartDate(null);
     setGameEndDate(null);
@@ -120,6 +124,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const activateSuperPowerGoodMove = () => {
     if (gameStartDate && !superPowerUsed2) {
       setSuperPowerUsed2(true);
+      if (attempts === 3) {
+        setRemainingAttempts(с => с + 1);
+      } else if (attempts === 1) {
+        setRemainingAttempts(с => с + 1);
+      }
     } else {
       // Суперсила уже использована, ничего не делаем
     }
@@ -172,7 +181,28 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (playerLost) {
       if (!easyMode) {
         // В стандартном режиме завершаем игру после одной ошибки
-        finishGame(STATUS_LOST);
+        setRemainingAttempts(prevAttempts => prevAttempts - 1);
+        if (remainingAttempts <= 1) {
+          // Завершаем игру после использования всех попыток
+          finishGame(STATUS_LOST);
+        } else {
+          // Открываем и закрываем вторую карту после ошибки
+          const updatedCards = nextCards.map(card => {
+            if (openCardsWithoutPair.some(openCard => openCard.id === card.id)) {
+              // Временно открываем вторую карту
+              if (card.open) {
+                setTimeout(() => {
+                  setCards(prevCards => {
+                    const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
+                    return updated;
+                  });
+                }, 1000); // Задержка в миллисекундах (в данном случае 1 секунда)
+              }
+            }
+            return card;
+          });
+          setCards(updatedCards);
+        }
       } else {
         // В облегченном режиме уменьшаем счетчик ошибок
         setRemainingAttempts(prevAttempts => prevAttempts - 1);
@@ -331,7 +361,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 onClick={activateSuperPowerEyeOfGod}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ГЛАЗ БОГА <br>----------------<br> При активации на 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
+                    "ПРОЗРЕНИЕ <br>👀<br> При активации на 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -343,7 +373,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 onClick={activateSuperPowerPairOfCards}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "ВТОРАЯ ПОЛОВИНКА <br>----------------<br> При активации показывает игроку пару карт или вторую карту, если игрок успел выбрать первую карту",
+                    "ВТОРАЯ ПОЛОВИНКА <br>💕<br> При активации показывает игроку пару карт или вторую карту, если игрок успел выбрать первую карту",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
@@ -355,7 +385,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 onClick={activateSuperPowerGoodMove}
                 onMouseEnter={() =>
                   handleSuperPowerMouseEnter(
-                    "УДАЧНЫЙ ХОД <br>----------------<br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
+                    "УДАЧНЫЙ ХОД <br>🍀<br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
                   )
                 }
                 onMouseLeave={() => handleSuperPowerMouseLeave()}
