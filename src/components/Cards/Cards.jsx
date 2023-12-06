@@ -6,10 +6,11 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button, ButtonExit } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import eyeOfGod from "../../img/free-icon-god-1152084.png";
 import pairOfCards from "../../img/free-icon-spade-8217313.png";
 import goodMove from "../../img/free-icon-luck-1626871.png";
+import { superPowers } from "../../store/actions & types/gameActions";
 
 const STATUS_LOST = "STATUS_LOST";
 const STATUS_WON = "STATUS_WON";
@@ -39,6 +40,7 @@ function getTimerValue(startDate, endDate) {
 
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const easyMode = useSelector(state => state.game.easyMode);
   const attempts = easyMode ? 3 : 1;
   const [remainingAttempts, setRemainingAttempts] = useState(attempts);
@@ -89,10 +91,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setRemainingAttempts(easyMode ? 3 : 1);
   }
 
+  // ПРОЗРЕНИЕ
+
   const activateSuperPowerEyeOfGod = () => {
     if (gameStartDate && !superPowerUsed) {
       setSuperPowerUsed(true);
       setSuperPowerActiveEyeOfGod(true);
+      dispatch(superPowers(true));
       const pauseTime = new Date(); // Сохраняем время паузы
       setGameEndDate(pauseTime);
       setTimeout(() => {
@@ -114,6 +119,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const activateSuperPowerPairOfCards = () => {
     if (gameStartDate && !superPowerUsed1) {
       setSuperPowerUsed1(true);
+      dispatch(superPowers(true));
       const pair = findPairOfCards(cards);
       if (pair) {
         const updatedCards = cards.map(card => {
@@ -138,7 +144,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             return card;
           });
           setCards(closingCards);
-        }, 1000); // 1000 миллисекунд = 1 секунда
+        }, 1000);
       }
     } else {
       // Суперсила уже использована, ничего не делаем
@@ -167,6 +173,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const activateSuperPowerGoodMove = () => {
     if (gameStartDate && !superPowerUsed2) {
       setSuperPowerUsed2(true);
+      dispatch(superPowers(true));
       if (attempts === 3) {
         setRemainingAttempts(с => с + 1);
       } else if (attempts === 1) {
@@ -239,7 +246,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                     const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
                     return updated;
                   });
-                }, 1000); // Задержка в миллисекундах (в данном случае 1 секунда)
+                }, 1000);
               }
             }
             return card;

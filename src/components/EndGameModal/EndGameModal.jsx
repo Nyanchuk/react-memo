@@ -5,6 +5,7 @@ import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
 import { useState } from "react";
 import { addNewLeader } from "../../api";
+import { useSelector } from "react-redux";
 
 export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, showLeaderboardPrompt }) {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const padWithZero = num => (num < 10 ? `0${num}` : num);
   const minutes = padWithZero(gameDurationMinutes);
   const seconds = padWithZero(gameDurationSeconds);
+  const easyMode = useSelector(state => state.game.easyMode);
+  const usedSuperPowers = useSelector(state => state.game.usedSuperPowers);
 
   const handleInputChange = event => {
     setUserName(event.target.value);
@@ -26,10 +29,20 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
       setIsLoading(true);
       const time = parseInt(gameDurationMinutes, 10) * 60 + parseInt(gameDurationSeconds, 10);
       const finalUserName = userName || "Пользователь";
-      console.log("Отправляемые данные:", userName, time); // Вывод данных перед отправкой
+      let achievements = [];
+
+      if (easyMode === false) {
+        achievements.push(1); // Добавление значения 1 в массив achievements
+      }
+
+      if (usedSuperPowers === false) {
+        achievements.push(2); // Добавление значения 2 в массив achievements
+      }
+
+      console.log("Отправляемые данные:", finalUserName, time, achievements); // Вывод данных перед отправкой
 
       try {
-        await addNewLeader({ name: finalUserName, time: time }); // Отправка API-запроса на добавление нового лидера
+        await addNewLeader({ name: finalUserName, time: time, achievements: achievements }); // Отправка API-запроса на добавление нового лидера
         // Переход на страницу лидерборда
         navigate("/leaderboard");
       } catch (error) {

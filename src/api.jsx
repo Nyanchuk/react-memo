@@ -1,8 +1,8 @@
-const allWinnersNew = "https://wedev-api.sky.pro/api/v2/leaderboard";
+const allWinners = "https://wedev-api.sky.pro/api/v2/leaderboard";
 
 export async function getFetchWinners() {
   try {
-    const response = await fetch(allWinnersNew);
+    const response = await fetch(allWinners);
     if (!response.ok) {
       throw new Error("Ошибка получения данных");
     }
@@ -14,12 +14,13 @@ export async function getFetchWinners() {
   }
 }
 
-export const addNewLeader = async ({ name, time }) => {
-  const response = await fetch("https://wedev-api.sky.pro/api/leaderboard", {
+export const addNewLeader = async ({ name, time, achievements }) => {
+  const response = await fetch(allWinners, {
     method: "POST",
     body: JSON.stringify({
       name: name,
       time: time,
+      achievements: achievements,
     }),
   });
 
@@ -33,24 +34,3 @@ export const addNewLeader = async ({ name, time }) => {
   }
   return data;
 };
-
-// export async function addNewLeader(newLeaderData) {
-//   const requestOptions = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(newLeaderData),
-//   };
-
-//   try {
-//     const response = await fetch("https://wedev-api.sky.pro/api/leaderboard", requestOptions);
-//     if (!response.ok) {
-//       throw new Error("Ошибка при добавлении нового лидера");
-//     }
-//     // Возвращаем результат, если необходимо
-//     return await response.json();
-//   } catch (error) {
-//     throw new Error("Ошибка сети: " + error.message);
-//   }
-// }
