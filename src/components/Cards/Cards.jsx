@@ -114,11 +114,54 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const activateSuperPowerPairOfCards = () => {
     if (gameStartDate && !superPowerUsed1) {
       setSuperPowerUsed1(true);
+      const pair = findPairOfCards(cards);
+      if (pair) {
+        const updatedCards = cards.map(card => {
+          if (card.id === pair[0].id || card.id === pair[1].id) {
+            return {
+              ...card,
+              open: true,
+            };
+          }
+          return card;
+        });
+        setCards(updatedCards);
+        // Через 1 секунду закрываем каждую карту отдельно
+        setTimeout(() => {
+          const closingCards = updatedCards.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+              return {
+                ...card,
+                open: false,
+              };
+            }
+            return card;
+          });
+          setCards(closingCards);
+        }, 1000); // 1000 миллисекунд = 1 секунда
+      }
     } else {
       // Суперсила уже использована, ничего не делаем
     }
   };
 
+  // Функция findPairOfCards которая открывает рандомную карту в списке
+
+  const findPairOfCards = () => {
+    const closedCards = cards.filter(card => !card.open);
+    const randomIndex1 = Math.floor(Math.random() * closedCards.length);
+    const randomCard1 = closedCards[randomIndex1];
+    let randomIndex2 = Math.floor(Math.random() * closedCards.length);
+    while (randomIndex2 === randomIndex1) {
+      randomIndex2 = Math.floor(Math.random() * closedCards.length);
+    }
+    const randomCard2 = closedCards[randomIndex2];
+    if (randomCard1.suit === randomCard2.suit && randomCard1.rank === randomCard2.rank) {
+      return [randomCard1, randomCard2];
+    } else {
+      return findPairOfCards(closedCards);
+    }
+  };
   // УДАЧНЫЙ ХОД
 
   const activateSuperPowerGoodMove = () => {
