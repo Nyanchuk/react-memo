@@ -120,34 +120,60 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (gameStartDate && !superPowerUsed1) {
       setSuperPowerUsed1(true);
       dispatch(superPowers(true));
-      const pair = findPairOfCards(cards);
-      if (pair) {
-        const updatedCards = cards.map(card => {
-          if (card.id === pair[0].id || card.id === pair[1].id) {
-            return {
-              ...card,
-              open: true,
-            };
-          }
-          return card;
-        });
-        setCards(updatedCards);
-        // Через 1 секунду закрываем каждую карту отдельно
-        setTimeout(() => {
-          const closingCards = updatedCards.map(card => {
+      const openCards = cards.filter(card => card.open);
+      if (openCards.length % 2 !== 0) {
+        const pair = SearchTwoCard(cards);
+        if (pair) {
+          const updatedCards = cards.map(card => {
             if (card.id === pair[0].id || card.id === pair[1].id) {
               return {
                 ...card,
-                open: false,
+                open: true,
               };
             }
             return card;
           });
-          setCards(closingCards);
-        }, 1000);
+          setCards(updatedCards);
+          setTimeout(() => {
+            const closingCards = updatedCards.map(card => {
+              if (card.id === pair[0].id || card.id === pair[1].id) {
+                return {
+                  ...card,
+                  open: false,
+                };
+              }
+              return card;
+            });
+            setCards(closingCards);
+          }, 1000);
+        }
+      } else {
+        const pair = findPairOfCards(cards);
+        if (pair) {
+          const updatedCards = cards.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+              return {
+                ...card,
+                open: true,
+              };
+            }
+            return card;
+          });
+          setCards(updatedCards);
+          setTimeout(() => {
+            const closingCards = updatedCards.map(card => {
+              if (card.id === pair[0].id || card.id === pair[1].id) {
+                return {
+                  ...card,
+                  open: false,
+                };
+              }
+              return card;
+            });
+            setCards(closingCards);
+          }, 1000);
+        }
       }
-    } else {
-      // Суперсила уже использована, ничего не делаем
     }
   };
 
@@ -167,6 +193,25 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     } else {
       return findPairOfCards(closedCards);
     }
+  };
+
+  const SearchTwoCard = allCards => {
+    const openCards = allCards.filter(card => card.open && !card.pairFound);
+    for (let i = 0; i < openCards.length; i++) {
+      const knownCard = openCards[i];
+      const matchingCard = allCards.find(
+        card =>
+          !card.open &&
+          !card.pairFound &&
+          card.id !== knownCard.id &&
+          card.suit === knownCard.suit &&
+          card.rank === knownCard.rank,
+      );
+      if (matchingCard) {
+        return [knownCard, matchingCard];
+      }
+    }
+    return null;
   };
   // УДАЧНЫЙ ХОД
 
