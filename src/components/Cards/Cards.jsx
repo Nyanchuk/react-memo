@@ -6,7 +6,11 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button, ButtonExit } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import eyeOfGod from "../../img/free-icon-god-1152084.png";
+import pairOfCards from "../../img/free-icon-spade-8217313.png";
+import goodMove from "../../img/free-icon-luck-1626871.png";
+import { superPowers } from "../../store/actions & types/gameActions";
 
 const STATUS_LOST = "STATUS_LOST";
 const STATUS_WON = "STATUS_WON";
@@ -36,6 +40,7 @@ function getTimerValue(startDate, endDate) {
 
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const easyMode = useSelector(state => state.game.easyMode);
   const attempts = easyMode ? 3 : 1;
   const [remainingAttempts, setRemainingAttempts] = useState(attempts);
@@ -44,6 +49,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [gameStartDate, setGameStartDate] = useState(null);
   const [gameEndDate, setGameEndDate] = useState(null);
   const [showLeaderboardPrompt, setShowLeaderboardPrompt] = useState(false);
+  const [superPowerDescription, setSuperPowerDescription] = useState(null);
+  const [superPowerUsed, setSuperPowerUsed] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerUsed1, setSuperPowerUsed1] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerUsed2, setSuperPowerUsed2] = useState(false); // Состояние для отслеживания числа кликов
+  const [superPowerActiveEyeOfGod, setSuperPowerActiveEyeOfGod] = useState(false); // Состояние для отслеживания клика по "ГЛАЗ БОГА"
 
   const [timer, setTimer] = useState({
     seconds: 0,
@@ -53,8 +63,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
+    setSuperPowerActiveEyeOfGod(false);
+    setSuperPowerUsed(false);
+    setSuperPowerUsed1(false);
+    setSuperPowerUsed2(false);
     if (status === STATUS_WON && pairsCount === 9) {
       setShowLeaderboardPrompt(true);
+      setSuperPowerActiveEyeOfGod(false);
     }
   }
   function startGame() {
@@ -65,12 +80,154 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(STATUS_IN_PROGRESS);
   }
   function resetGame() {
+    setSuperPowerUsed(false);
+    setSuperPowerUsed1(false);
+    setSuperPowerUsed2(false);
+    setSuperPowerActiveEyeOfGod(false);
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
     setRemainingAttempts(easyMode ? 3 : 1);
   }
+
+  // ПРОЗРЕНИЕ
+
+  const activateSuperPowerEyeOfGod = () => {
+    if (gameStartDate && !superPowerUsed) {
+      setSuperPowerUsed(true);
+      setSuperPowerActiveEyeOfGod(true);
+      dispatch(superPowers(true));
+      const pauseTime = new Date(); // Сохраняем время паузы
+      setGameEndDate(pauseTime);
+      setTimeout(() => {
+        setGameStartDate(prevStartDate => {
+          const timePaused = new Date().getTime() - pauseTime.getTime(); // Вычисляем время, на которое таймер был приостановлен
+          const newStartDate = new Date(prevStartDate.getTime() + timePaused); // Устанавливаем новое начальное время, учитывая время паузы
+          setGameEndDate(null); // Сбрасываем приостановленную конечную дату
+          return newStartDate; // Возобновляем таймер
+        });
+      }, 5000); // Возобновляем таймер через 5 секунд
+      setTimeout(() => setSuperPowerActiveEyeOfGod(false), 5000); // Деактивируем суперсилу через 5 секунд
+    } else {
+      // Суперсила уже использована, ничего не делаем
+    }
+  };
+
+  // ВТОРАЯ ПОЛОВИНКА
+
+  const activateSuperPowerPairOfCards = () => {
+    if (gameStartDate && !superPowerUsed1) {
+      setSuperPowerUsed1(true);
+      dispatch(superPowers(true));
+      const openCards = cards.filter(card => card.open);
+      if (openCards.length % 2 !== 0) {
+        const pair = SearchTwoCard(cards);
+        if (pair) {
+          const updatedCards = cards.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+              return {
+                ...card,
+                open: true,
+              };
+            }
+            return card;
+          });
+          setCards(updatedCards);
+          setTimeout(() => {
+            const closingCards = updatedCards.map(card => {
+              if (card.id === pair[0].id || card.id === pair[1].id) {
+                return {
+                  ...card,
+                  open: false,
+                };
+              }
+              return card;
+            });
+            setCards(closingCards);
+          }, 1000);
+        }
+      } else {
+        const pair = findPairOfCards(cards);
+        if (pair) {
+          const updatedCards = cards.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+              return {
+                ...card,
+                open: true,
+              };
+            }
+            return card;
+          });
+          setCards(updatedCards);
+          setTimeout(() => {
+            const closingCards = updatedCards.map(card => {
+              if (card.id === pair[0].id || card.id === pair[1].id) {
+                return {
+                  ...card,
+                  open: false,
+                };
+              }
+              return card;
+            });
+            setCards(closingCards);
+          }, 1000);
+        }
+      }
+    }
+  };
+
+  // Функция findPairOfCards которая открывает рандомную карту в списке
+
+  const findPairOfCards = () => {
+    const closedCards = cards.filter(card => !card.open);
+    const randomIndex1 = Math.floor(Math.random() * closedCards.length);
+    const randomCard1 = closedCards[randomIndex1];
+    let randomIndex2 = Math.floor(Math.random() * closedCards.length);
+    while (randomIndex2 === randomIndex1) {
+      randomIndex2 = Math.floor(Math.random() * closedCards.length);
+    }
+    const randomCard2 = closedCards[randomIndex2];
+    if (randomCard1.suit === randomCard2.suit && randomCard1.rank === randomCard2.rank) {
+      return [randomCard1, randomCard2];
+    } else {
+      return findPairOfCards(closedCards);
+    }
+  };
+
+  const SearchTwoCard = allCards => {
+    const openCards = allCards.filter(card => card.open && !card.pairFound);
+    for (let i = 0; i < openCards.length; i++) {
+      const knownCard = openCards[i];
+      const matchingCard = allCards.find(
+        card =>
+          !card.open &&
+          !card.pairFound &&
+          card.id !== knownCard.id &&
+          card.suit === knownCard.suit &&
+          card.rank === knownCard.rank,
+      );
+      if (matchingCard) {
+        return [knownCard, matchingCard];
+      }
+    }
+    return null;
+  };
+  // УДАЧНЫЙ ХОД
+
+  const activateSuperPowerGoodMove = () => {
+    if (gameStartDate && !superPowerUsed2) {
+      setSuperPowerUsed2(true);
+      dispatch(superPowers(true));
+      if (attempts === 3) {
+        setRemainingAttempts(с => с + 1);
+      } else if (attempts === 1) {
+        setRemainingAttempts(с => с + 1);
+      }
+    } else {
+      // Суперсила уже использована, ничего не делаем
+    }
+  };
 
   const openCard = clickedCard => {
     // Если карта уже открыта, то ничего не делаем
@@ -119,7 +276,28 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (playerLost) {
       if (!easyMode) {
         // В стандартном режиме завершаем игру после одной ошибки
-        finishGame(STATUS_LOST);
+        setRemainingAttempts(prevAttempts => prevAttempts - 1);
+        if (remainingAttempts <= 1) {
+          // Завершаем игру после использования всех попыток
+          finishGame(STATUS_LOST);
+        } else {
+          // Открываем и закрываем вторую карту после ошибки
+          const updatedCards = nextCards.map(card => {
+            if (openCardsWithoutPair.some(openCard => openCard.id === card.id)) {
+              // Временно открываем вторую карту
+              if (card.open) {
+                setTimeout(() => {
+                  setCards(prevCards => {
+                    const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
+                    return updated;
+                  });
+                }, 1000);
+              }
+            }
+            return card;
+          });
+          setCards(updatedCards);
+        }
       } else {
         // В облегченном режиме уменьшаем счетчик ошибок
         setRemainingAttempts(prevAttempts => prevAttempts - 1);
@@ -190,327 +368,138 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     };
   }, [gameStartDate, gameEndDate]);
 
+  //ИНФО-ОКНА
+
+  const handleSuperPowerMouseEnter = description => {
+    setSuperPowerDescription(description);
+  };
+
+  const handleSuperPowerMouseLeave = () => {
+    setSuperPowerDescription(null);
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.timer}>
-          {status === STATUS_PREVIEW ? (
-            <div>
-              <p className={styles.previewText}>Запоминайте пары!</p>
-              <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
-            </div>
-          ) : (
-            <>
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>min</div>
-                <div>{timer.minutes.toString().padStart("2", "0")}</div>
+    <div className={styles.max}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.timer}>
+            {status === STATUS_PREVIEW ? (
+              <div>
+                <p className={styles.previewText}>Запоминайте пары!</p>
+                <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
               </div>
-              .
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>sec</div>
-                <div>{timer.seconds.toString().padStart("2", "0")}</div>
+            ) : (
+              <>
+                <div className={styles.timerValue}>
+                  <div className={styles.timerDescription}>min</div>
+                  <div>{timer.minutes.toString().padStart("2", "0")}</div>
+                </div>
+                .
+                <div className={styles.timerValue}>
+                  <div className={styles.timerDescription}>sec</div>
+                  <div>{timer.seconds.toString().padStart("2", "0")}</div>
+                </div>
+              </>
+            )}
+          </div>
+          <div className={styles.attemptConteiner}>
+            <div className={styles.attemptText}>Число попыток:</div>
+            <div className={styles.attempt}>{remainingAttempts}</div>
+          </div>
+          {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        </div>
+
+        <div className={styles.cards}>
+          {cards.map(card => (
+            <Card
+              key={card.id}
+              onClick={() => openCard(card)}
+              open={superPowerActiveEyeOfGod || status !== STATUS_IN_PROGRESS ? true : card.open}
+              suit={card.suit}
+              rank={card.rank}
+            />
+          ))}
+          {pairsCount === 3 && (
+            <>
+              <div className={styles.topInfo}>
+                <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+              </div>
+            </>
+          )}
+          {pairsCount === 6 && (
+            <>
+              <div className={styles.topInfo}>
+                <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
               </div>
             </>
           )}
         </div>
-        <div className={styles.attemptConteiner}>
-          <div className={styles.attemptText}>Число попыток:</div>
-          <div className={styles.attempt}>{remainingAttempts}</div>
-        </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
-      </div>
 
-      <div className={styles.cards}>
-        {cards.map(card => (
-          <Card
-            key={card.id}
-            onClick={() => openCard(card)}
-            open={status !== STATUS_IN_PROGRESS ? true : card.open}
-            suit={card.suit}
-            rank={card.rank}
-          />
-        ))}
+        {isGameEnded ? (
+          <div className={styles.modalContainer}>
+            <EndGameModal
+              isWon={status === STATUS_WON}
+              gameDurationSeconds={timer.seconds}
+              gameDurationMinutes={timer.minutes}
+              onClick={resetGame}
+              showLeaderboardPrompt={showLeaderboardPrompt}
+            />
+          </div>
+        ) : null}
       </div>
-
-      {isGameEnded ? (
-        <div className={styles.modalContainer}>
-          <EndGameModal
-            isWon={status === STATUS_WON}
-            gameDurationSeconds={timer.seconds}
-            gameDurationMinutes={timer.minutes}
-            onClick={resetGame}
-            showLeaderboardPrompt={showLeaderboardPrompt}
-          />
-        </div>
-      ) : null}
-      <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+      {pairsCount === 9 && (
+        <>
+          <div className={styles.topInfo}>
+            <div className={styles.footer}>
+              <div
+                className={superPowerUsed ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerEyeOfGod}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "ПРОЗРЕНИЕ <br>👀<br> При активации на 5 секунд показывает все карты. Таймер длительности игры на это время останавливается",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={eyeOfGod} alt="Eye of God" className={styles.footerImg} />
+              </div>
+              <div
+                className={superPowerUsed1 ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerPairOfCards}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "ВТОРАЯ ПОЛОВИНКА <br>💕<br> При активации показывает игроку пару карт или вторую карту, если игрок успел выбрать первую карту",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={pairOfCards} alt="Pair of Cards" className={styles.footerImg} />
+              </div>
+              <div
+                className={superPowerUsed2 ? styles.footerConteinerOff : styles.footerConteiner}
+                onClick={activateSuperPowerGoodMove}
+                onMouseEnter={() =>
+                  handleSuperPowerMouseEnter(
+                    "УДАЧНЫЙ ХОД <br>🍀<br> При активации игрок имеет право на ошибку в выборе карты. Ход всегда удачный, потому что игрок не проиграет даже в случае несовпадения выбранных карт",
+                  )
+                }
+                onMouseLeave={() => handleSuperPowerMouseLeave()}
+              >
+                <img src={goodMove} alt="Good Move" className={styles.footerImg} />
+              </div>
+            </div>
+            <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
+          </div>
+        </>
+      )}
+      <div className={`${styles.bottomInfo} ${superPowerDescription ? styles.descriptionSlideIn : ""}`}>
+        {superPowerDescription && (
+          <div
+            className={styles.superPowerDescription}
+            dangerouslySetInnerHTML={{ __html: superPowerDescription }}
+          ></div>
+        )}
+      </div>
     </div>
   );
 }
-
-// import { shuffle } from "lodash";
-// import { useEffect, useState } from "react";
-// import { generateDeck } from "../../utils/cards";
-// import styles from "./Cards.module.css";
-// import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
-// import { Button, ButtonExit } from "../../components/Button/Button";
-// import { Card } from "../../components/Card/Card";
-// import { useNavigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
-
-// // Игра закончилась
-// const STATUS_LOST = "STATUS_LOST";
-// const STATUS_WON = "STATUS_WON";
-// // Идет игра: карты закрыты, игрок может их открыть
-// const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
-// // Начало игры: игрок видит все карты в течении нескольких секунд
-// const STATUS_PREVIEW = "STATUS_PREVIEW";
-
-// function getTimerValue(startDate, endDate) {
-//   if (!startDate && !endDate) {
-//     return {
-//       minutes: 0,
-//       seconds: 0,
-//     };
-//   }
-
-//   if (endDate === null) {
-//     endDate = new Date();
-//   }
-
-//   const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
-//   const minutes = Math.floor(diffInSecconds / 60);
-//   const seconds = diffInSecconds % 60;
-//   return {
-//     minutes,
-//     seconds,
-//   };
-// }
-
-// /**
-//  * Основной компонент игры, внутри него находится вся игровая механика и логика.
-//  * pairsCount - сколько пар будет в игре
-//  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
-//  */
-// export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
-//   const navigate = useNavigate();
-//   const easyMode = useSelector(state => state.game.easyMode); // Получение значения из глобального состояния
-//   const attempts = easyMode ? 3 : 1;
-//   const [remainingAttempts, setRemainingAttempts] = useState(attempts);
-//   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
-//   const [cards, setCards] = useState([]);
-//   const [isLevel3Completed, setIsLevel3Completed] = useState(false);
-//   // Текущий статус игры
-//   const [status, setStatus] = useState(STATUS_PREVIEW);
-
-//   // Дата начала игры
-//   const [gameStartDate, setGameStartDate] = useState(null);
-//   // Дата конца игры
-//   const [gameEndDate, setGameEndDate] = useState(null);
-
-//   // Стейт для таймера, высчитывается в setInteval на основе gameStartDate и gameEndDate
-//   const [timer, setTimer] = useState({
-//     seconds: 0,
-//     minutes: 0,
-//   });
-
-//   function finishGame(status = STATUS_LOST) {
-//     setGameEndDate(new Date());
-//     setStatus(status);
-//   }
-//   function startGame() {
-//     const startDate = new Date();
-//     setGameEndDate(null);
-//     setGameStartDate(startDate);
-//     setTimer(getTimerValue(startDate, null));
-//     setStatus(STATUS_IN_PROGRESS);
-//   }
-//   function resetGame() {
-//     setGameStartDate(null);
-//     setGameEndDate(null);
-//     setTimer(getTimerValue(null, null));
-//     setStatus(STATUS_PREVIEW);
-//     setRemainingAttempts(easyMode ? 3 : 1);
-//   }
-
-//   /**
-//    * Обработка основного действия в игре - открытие карты.
-//    * После открытия карты игра может пепереходит в следующие состояния
-//    * - "Игрок выиграл", если на поле открыты все карты
-//    * - "Игрок проиграл", если на поле есть две открытые карты без пары
-//    * - "Игра продолжается", если не случилось первых двух условий
-//    */
-//   const openCard = clickedCard => {
-//     // Если карта уже открыта, то ничего не делаем
-//     if (clickedCard.open) {
-//       return;
-//     }
-//     // Игровое поле после открытия кликнутой карты
-//     const nextCards = cards.map(card => {
-//       if (card.id !== clickedCard.id) {
-//         return card;
-//       }
-
-//       return {
-//         ...card,
-//         open: true,
-//       };
-//     });
-
-//     setCards(nextCards);
-
-//     const isPlayerWon = nextCards.every(card => card.open);
-
-//     // Победа - все карты на поле открыты
-//     if (isPlayerWon) {
-//       finishGame(STATUS_WON);
-//       return;
-//     }
-
-//     // Открытые карты на игровом поле
-//     const openCards = nextCards.filter(card => card.open);
-
-//     // Ищем открытые карты, у которых нет пары среди других открытых
-//     const openCardsWithoutPair = openCards.filter(card => {
-//       const sameCards = openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
-
-//       if (sameCards.length < 2) {
-//         return true;
-//       }
-
-//       return false;
-//     });
-
-//     const playerLost = openCardsWithoutPair.length >= 2;
-
-//     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-//     if (playerLost) {
-//       if (!easyMode) {
-//         // В стандартном режиме завершаем игру после одной ошибки
-//         finishGame(STATUS_LOST);
-//       } else {
-//         // В облегченном режиме уменьшаем счетчик ошибок
-//         setRemainingAttempts(prevAttempts => prevAttempts - 1);
-
-//         if (remainingAttempts <= 1) {
-//           // Завершаем игру после использования всех попыток
-//           finishGame(STATUS_LOST);
-//         } else {
-//           // Открываем и закрываем вторую карту после ошибки
-//           const updatedCards = nextCards.map(card => {
-//             if (openCardsWithoutPair.some(openCard => openCard.id === card.id)) {
-//               // Временно открываем вторую карту
-//               if (card.open) {
-//                 setTimeout(() => {
-//                   setCards(prevCards => {
-//                     const updated = prevCards.map(c => (c.id === card.id ? { ...c, open: false } : c));
-//                     return updated;
-//                   });
-//                 }, 1000); // Задержка в миллисекундах (в данном случае 1 секунда)
-//               }
-//             }
-//             return card;
-//           });
-//           setCards(updatedCards);
-//         }
-//       }
-//       return;
-//     }
-
-//     // ... игра продолжается
-//   };
-
-//   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
-
-//   // Игровой цикл
-//   useEffect(() => {
-//     // В статусах кроме превью доп логики не требуется
-//     if (status !== STATUS_PREVIEW) {
-//       return;
-//     }
-
-//     // В статусе превью мы
-//     if (pairsCount > 36) {
-//       alert("Столько пар сделать невозможно");
-//       return;
-//     }
-
-//     setCards(() => {
-//       return shuffle(generateDeck(pairsCount, 10));
-//     });
-
-//     const timerId = setTimeout(() => {
-//       startGame();
-//     }, previewSeconds * 1000);
-
-//     return () => {
-//       clearTimeout(timerId);
-//     };
-//   }, [status, pairsCount, previewSeconds]);
-
-//   // Обновляем значение таймера в интервале
-//   useEffect(() => {
-//     const intervalId = setInterval(() => {
-//       setTimer(getTimerValue(gameStartDate, gameEndDate));
-//     }, 300);
-//     return () => {
-//       clearInterval(intervalId);
-//     };
-//   }, [gameStartDate, gameEndDate]);
-
-//   return (
-//     <div className={styles.container}>
-//       <div className={styles.header}>
-//         <div className={styles.timer}>
-//           {status === STATUS_PREVIEW ? (
-//             <div>
-//               <p className={styles.previewText}>Запоминайте пары!</p>
-//               <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
-//             </div>
-//           ) : (
-//             <>
-//               <div className={styles.timerValue}>
-//                 <div className={styles.timerDescription}>min</div>
-//                 <div>{timer.minutes.toString().padStart("2", "0")}</div>
-//               </div>
-//               .
-//               <div className={styles.timerValue}>
-//                 <div className={styles.timerDescription}>sec</div>
-//                 <div>{timer.seconds.toString().padStart("2", "0")}</div>
-//               </div>
-//             </>
-//           )}
-//         </div>
-//         <div className={styles.attemptConteiner}>
-//           <div className={styles.attemptText}>Число попыток:</div>
-//           <div className={styles.attempt}>{remainingAttempts}</div>
-//         </div>
-//         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
-//       </div>
-
-//       <div className={styles.cards}>
-//         {cards.map(card => (
-//           <Card
-//             key={card.id}
-//             onClick={() => openCard(card)}
-//             open={status !== STATUS_IN_PROGRESS ? true : card.open}
-//             suit={card.suit}
-//             rank={card.rank}
-//           />
-//         ))}
-//       </div>
-
-//       {isGameEnded ? (
-//         <div className={styles.modalContainer}>
-//           <EndGameModal
-//             isWon={status === STATUS_WON}
-//             gameDurationSeconds={timer.seconds}
-//             gameDurationMinutes={timer.minutes}
-//             onClick={resetGame}
-//           />
-//         </div>
-//       ) : null}
-//       <ButtonExit onClick={() => navigate("/")}>Вернуться к выбору сложности</ButtonExit>
-//     </div>
-//   );
-// }

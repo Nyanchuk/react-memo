@@ -1,3 +1,12 @@
+.max {
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
 .attemptConteiner {
   background-color: #c10071;
   box-shadow: 0 0 15px #c10071;
@@ -24,9 +33,10 @@
 
 .container {
   width: 672px;
-  margin: 100px auto;
-  padding: 26px;
-  padding-top: 22px;
+ 
+  padding-left: 26px;
+  padding-right: 26px;
+  padding-top: 10px;
   box-sizing: border-box;
 }
 
@@ -94,4 +104,104 @@
   font-weight: 400;
   line-height: 32px;
   margin-bottom: -12px;
+}
+
+.footer{
+  margin-top: 120px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.footerConteiner {
+  margin-bottom: 265px;
+  margin-top: 25px;
+  background-color: rgb(253, 191, 227);
+  box-shadow: 0 0 20px rgb(253, 191, 227);
+  text-align: center;
+  color: #ffffff;
+  border-radius: 200px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footerConteinerOff {
+  margin-bottom: 265px;
+  margin-top: 25px;
+  background-color: rgb(129, 63, 101);
+  box-shadow: 0 0 20px rgb(129, 63, 101);
+  text-align: center;
+  color: #ffffff;
+  border-radius: 200px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footerConteiner:hover {
+  transition: all .5s;
+  box-shadow: 0 0 30px rgb(253, 191, 227);
+}
+
+.footerConteiner:active {
+  background-color: rgb(246, 90, 171);
+  box-shadow: 0 0 20px rgb(246, 90, 181);
+}
+
+.footerImg{
+  padding-bottom: 4px;
+  max-width: 65%;
+  height: auto;
+}
+
+.bottomInfo{
+  width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.superPowerDescription {
+  position: relative;
+  bottom: -70px;
+  right: 300px;
+  text-align: center;
+  width: 280px;
+  height: 150px;
+  padding: 10px;
+  background: rgb(253, 191, 227);
+  box-shadow: 0 0 15px rgb(253, 191, 227);
+  border-radius: 30px;
+  font-family: StratosSkyeng;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.topInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Классы для управления анимацией */
+.descriptionSlideIn {
+  height: 190px;
+  animation: slideIn 0.8s forwards;
 }

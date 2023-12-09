@@ -15,9 +15,14 @@
     color: #800069;
     background: #fecefa;
     box-shadow: 0 0 15px #fecefa;
-    /* background: #fecefa; */
     border-radius: 20px;
 }
+
+.accentRow {
+    background-color: #fffccc;
+    color: #ff00aa;
+    font-weight: bold;
+  }
 
 .position {
     max-width: 200px;
@@ -27,14 +32,16 @@
 
 .users {
     text-align: center;
+    height: 30px;
 }
 
 .img {
+    padding-left: 50px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     width: 800px;
-    height: 100px;
+    height: 80px;
 }
 
 .loadingImage {
@@ -52,4 +59,58 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.achievementImage {
+
+    width: 25px; /* Установите нужную ширину */
+    height: 25px; /* Установите нужную высоту */
+    margin-right: 5px; /* Добавьте отступ между изображениями, если необходимо */
+    margin-left: 5px;
+  }
+
+.achievementImages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottomInfo{
+    width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+.superPowerDescription {
+    position: relative;
+    bottom: 150px;
+    right: 425px;
+    text-align: center;
+    width: 280px;
+    height: 24px;
+    padding: 10px;
+    background: rgb(253, 191, 227);
+    box-shadow: 0 0 15px rgb(253, 191, 227);
+    border-radius: 20px;
+    font-family: StratosSkyeng;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(20%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+  
+  /* Классы для управления анимацией */
+.descriptionSlideIn {
+    height: 190px;
+    animation: slideIn 0.8s forwards;
 }
